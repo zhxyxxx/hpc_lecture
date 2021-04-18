@@ -1,5 +1,8 @@
 # hpc_lecture
 
+### 学籍番号 21M30867
+### ZHANG XINYU
+
 |          | Topic                                | Sample code               |
 | -------- | ------------------------------------ | ------------------------- |
 | Class 1  | Introduction to parallel programming |                           |
