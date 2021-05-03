@@ -20,9 +20,14 @@ int main() {
   for (int i=0; i<N; i++) {
     b[i] = 0;
     for (int j=0; j<N; j++) {
-      A[N*i+j] = drand48();
+      A[N*i+j] = drand48() + (i == j) * 100;
       b[i] += A[N*i+j] * x[j];
     }
   }
-  LAPACKE_dgetrf(LAPACK_ROW_MAJOR, N, N, &A[0], N, &ipiv[0]);
+  LAPACKE_dgetrf(LAPACK_ROW_MAJOR, N, N, A.data(), N, ipiv.data());
+  //LAPACKE_dgetrs(LAPACK_ROW_MAJOR, 'N', N, 1, A.data(), N, ipiv.data(), b.data(), 1);
+  cblas_dtrsm(CblasRowMajor, CblasLeft, CblasLower, CblasNoTrans, CblasUnit, N, 1, 1.0, A.data(), N, b.data(), 1);
+  cblas_dtrsm(CblasRowMajor, CblasLeft, CblasUpper, CblasNoTrans, CblasNonUnit, N, 1, 1.0, A.data(), N, b.data(), 1);
+  for (int i=0; i<N; i++)
+    printf("%lf %lf %d\n",x[i],b[i],ipiv[i]);
 }
