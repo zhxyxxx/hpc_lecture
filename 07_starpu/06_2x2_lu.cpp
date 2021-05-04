@@ -2,10 +2,9 @@
 #include <cstdlib>
 #include <cstdio>
 #include <vector>
-#include <chrono>
 
-#include "mkl_cblas.h"
-#include "mkl_lapacke.h"
+#include <mkl_cblas.h>
+#include <mkl_lapacke.h>
 
 using namespace std;
 

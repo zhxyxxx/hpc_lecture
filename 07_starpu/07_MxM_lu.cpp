@@ -2,19 +2,18 @@
 #include <cstdlib>
 #include <cstdio>
 #include <vector>
-#include <chrono>
 
-#include "mkl_cblas.h"
-#include "mkl_lapacke.h"
+#include <mkl_cblas.h>
+#include <mkl_lapacke.h>
 
 using namespace std;
 
 int main() {
   int M = 3;
   int N = 16;
-  vector<vector<double>> A(M*M);
-  vector<vector<double>> x(M);
-  vector<vector<double>> b(M);
+  vector<vector<double> > A(M*M);
+  vector<vector<double> > x(M);
+  vector<vector<double> > b(M);
   vector<int> ipiv(N);
   for (int m=0; m<M*M; m++)
     A[m] = vector<double>(N*N);
