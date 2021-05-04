@@ -10,7 +10,7 @@
 using namespace std;
 
 int main() {
-  int N = 256;
+  int N = 16;
   vector<double> A(N*N);
   vector<double> x(N);
   vector<double> b(N);
