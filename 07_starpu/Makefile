@@ -16,3 +16,5 @@
 	g++ 07_MxM_lu.cpp -lmkl_intel_lp64 -lmkl_gnu_thread -lmkl_core -lgomp
 08_openmp_lu: 08_openmp_lu.cpp
 	g++ 08_openmp_lu.cpp -lmkl_intel_lp64 -lmkl_gnu_thread -lmkl_core -lgomp -fopenmp
+09_starpu_lu: 09_starpu_lu.cpp
+	g++ 09_starpu_lu.cpp -lmkl_intel_lp64 -lmkl_gnu_thread -lmkl_core -lgomp -lstarpu-1.3
