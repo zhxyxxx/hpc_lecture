@@ -13,9 +13,9 @@ void getrf(vector<double>& A, int N) {
   LAPACKE_dgetrf(LAPACK_ROW_MAJOR, N, N, A.data(), N, ipiv.data());
 }
 
-void trsm(bool left, bool up, vector<double>& A, int NA, vector<double>& B, int NB) {
-  cblas_dtrsm(CblasRowMajor, left ? CblasLeft : CblasRight, up ? CblasUpper : CblasLower,
-	      CblasNoTrans, up ? CblasNonUnit : CblasUnit, NA, NB, 1.0, A.data(), NA, B.data(), NB);
+void trsm(bool left, bool upper, vector<double>& A, int NA, vector<double>& B, int NB) {
+  cblas_dtrsm(CblasRowMajor, left ? CblasLeft : CblasRight, upper ? CblasUpper : CblasLower,
+	      CblasNoTrans, upper ? CblasNonUnit : CblasUnit, NA, NB, 1.0, A.data(), NA, B.data(), NB);
 }
 
 void gemm(vector<double>& A, int NA, vector<double>& B, int NB, vector<double>& C) {
