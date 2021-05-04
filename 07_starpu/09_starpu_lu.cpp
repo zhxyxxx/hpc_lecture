@@ -9,9 +9,11 @@
 
 using namespace std;
 
-void getrf(vector<double>& A, int N) {
+void getrf(void *buffers[], void *) {
+  double *A = (double *)STARPU_MATRIX_GET_PTR(buffers[0]);
+  int N = (int)STARPU_MATRIX_GET_NX(buffers[0]);
   vector<int> ipiv(N);
-  LAPACKE_dgetrf(LAPACK_ROW_MAJOR, N, N, A.data(), N, ipiv.data());
+  LAPACKE_dgetrf(LAPACK_ROW_MAJOR, N, N, A, N, ipiv.data());
 }
 
 void trsm(bool left, bool up, vector<double>& A, int NA, vector<double>& B, int NB) {
@@ -34,7 +36,8 @@ int main() {
   vector<int> ipiv(N);
   vector<starpu_data_handle_t> A_h(M*M);
   vector<starpu_data_handle_t> b_h(M);
-  
+
+  int ret = starpu_init(NULL); 
   for (int m=0; m<M*M; m++) {
     A[m] = vector<double>(N*N);
     starpu_matrix_data_register(&A_h[m],0,(uintptr_t)A[m].data(),N,N,N,sizeof(double));
@@ -60,10 +63,14 @@ int main() {
       }
     }
   }
-  starpu_codelet cl;
-  starpu_codelet_init(&cl);
+  starpu_codelet getrf_cl;
+  starpu_codelet_init(&getrf_cl);
+  getrf_cl.cpu_funcs[0] = getrf;
+  getrf_cl.nbuffers = 1;
+  getrf_cl.modes[0] = STARPU_RW;
   for (int l=0; l<M; l++) {
-    getrf(A[M*l+l], N);
+    starpu_task_insert(&getrf_cl, STARPU_RW, A_h[M*l+l], 0);
+    starpu_task_wait_for_all();
     for (int m=l+1; m<M; m++) {
       trsm(left, lower, A[M*l+l], N, A[M*l+m], N);
       trsm(right, upper, A[M*l+l], N, A[M*m+l], N);
@@ -96,5 +103,5 @@ int main() {
     }
   }
   printf("Error: %g\n",std::sqrt(diff/norm));
-  //starpu_shutdown();
+  starpu_shutdown();
 }
