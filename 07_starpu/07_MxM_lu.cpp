@@ -8,9 +8,25 @@
 
 using namespace std;
 
+void getrf(vector<double>& A, int N) {
+  vector<int> ipiv(N);
+  LAPACKE_dgetrf(LAPACK_ROW_MAJOR, N, N, A.data(), N, ipiv.data());
+}
+
+void trsm(bool left, bool up, vector<double>& A, int NA, vector<double>& B, int NB) {
+  cblas_dtrsm(CblasRowMajor, left ? CblasLeft : CblasRight, up ? CblasUpper : CblasLower,
+	      CblasNoTrans, up ? CblasNonUnit : CblasUnit, NA, NB, 1.0, A.data(), NA, B.data(), NB);
+}
+
+void gemm(vector<double>& A, int NA, vector<double>& B, int NB, vector<double>& C) {
+  cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, NA, NB, NA, -1.0,
+	      A.data(), NA, B.data(), NB, 1.0, C.data(), NB);
+}
+
 int main() {
   int M = 3;
   int N = 16;
+  bool left = true, right = false, upper = true, lower = false;
   vector<vector<double> > A(M*M);
   vector<vector<double> > x(M);
   vector<vector<double> > b(M);
@@ -38,24 +54,24 @@ int main() {
     }
   }
   for (int l=0; l<M; l++) {
-    LAPACKE_dgetrf(LAPACK_ROW_MAJOR, N, N, A[M*l+l].data(), N, ipiv.data());
+    getrf(A[M*l+l], N);
     for (int m=l+1; m<M; m++) {
-      cblas_dtrsm(CblasRowMajor, CblasLeft, CblasLower, CblasNoTrans, CblasUnit, N, N, 1.0, A[M*l+l].data(), N, A[M*l+m].data(), N);
-      cblas_dtrsm(CblasRowMajor, CblasRight, CblasUpper, CblasNoTrans, CblasNonUnit, N, N, 1.0, A[M*l+l].data(), N, A[M*m+l].data(), N);
+      trsm(left, lower, A[M*l+l], N, A[M*l+m], N);
+      trsm(right, upper, A[M*l+l], N, A[M*m+l], N);
     }
     for (int m=l+1; m<M; m++)
       for (int n=l+1; n<M; n++)
-        cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, N, N, N, -1.0, A[M*m+l].data(), N, A[M*l+n].data(), N, 1.0, A[M*m+n].data(),N);
+	gemm(A[M*m+l], N, A[M*l+n], N, A[M*m+n]);
   }
   for (int m=0; m<M; m++) {
     for (int n=0; n<m; n++)
-      cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, N, 1, N, -1.0, A[M*m+n].data(), N, b[n].data(), 1, 1.0, b[m].data(), 1);
-    cblas_dtrsm(CblasRowMajor, CblasLeft, CblasLower, CblasNoTrans, CblasUnit, N, 1, 1.0, A[M*m+m].data(), N, b[m].data(), 1);
+      gemm(A[M*m+n], N, b[n], 1, b[m]);
+    trsm(left, lower, A[M*m+m], N, b[m], 1);
   }
   for (int m=M-1; m>=0; m--) {
     for (int n=M-1; n>m; n--)
-      cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, N, 1, N, -1.0, A[M*m+n].data(), N, b[n].data(), 1, 1.0, b[m].data(),1);
-    cblas_dtrsm(CblasRowMajor, CblasLeft, CblasUpper, CblasNoTrans, CblasNonUnit, N, 1, 1.0, A[M*m+m].data(), N, b[m].data(), 1);
+      gemm(A[M*m+n], N, b[n], 1, b[m]);
+    trsm(left, upper, A[M*m+m], N, b[m], 1);
   }
 
   double diff = 0, norm = 0;
