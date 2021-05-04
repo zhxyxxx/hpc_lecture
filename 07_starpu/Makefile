@@ -8,5 +8,7 @@
 	g++ 03_gpu.cpp -lstarpu-1.3
 04_both: 04_both.cpp
 	g++ 04_both.cpp -lstarpu-1.3
-05_block_lu: 05_block_lu.cpp
-	g++ 05_block_lu.cpp -lmkl_intel_lp64 -lmkl_gnu_thread -lmkl_core -lgomp
+05_lu: 05_lu.cpp
+	g++ 05_lu.cpp -lmkl_intel_lp64 -lmkl_gnu_thread -lmkl_core -lgomp
+06_2x2_lu: 06_2x2_lu.cpp
+	g++ 06_2x2_lu.cpp -lmkl_intel_lp64 -lmkl_gnu_thread -lmkl_core -lgomp
