@@ -12,3 +12,5 @@
 	g++ 05_lu.cpp -lmkl_intel_lp64 -lmkl_gnu_thread -lmkl_core -lgomp
 06_2x2_lu: 06_2x2_lu.cpp
 	g++ 06_2x2_lu.cpp -lmkl_intel_lp64 -lmkl_gnu_thread -lmkl_core -lgomp
+07_NxN_lu: 07_NxN_lu.cpp
+	g++ 07_NxN_lu.cpp -lmkl_intel_lp64 -lmkl_gnu_thread -lmkl_core -lgomp
