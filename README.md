@@ -9,7 +9,7 @@
 | Class 5  | GPU programming 1                    | 05_openacc                |
 | Class 6  | GPU programming 2                    | 06_cuda                   |
 | Class 7  | Parallel programing models           | 07_starpu                 |
-| Class 8  | Cache blocking                       | 08_cache_cpu,07_cache_gpu |
+| Class 8  | Cache blocking                       | 08_cache_cpu,08_cache_gpu |
 | Class 9  | High Performance Python              | 09_python                 |
 | Class 10 | I/O libraries                        | 10_io                     |
 | Class 11 | Parallel debugger                    | 11_debugger               |
